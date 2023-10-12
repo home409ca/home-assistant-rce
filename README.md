@@ -1,6 +1,16 @@
 # home-assistant-rce
 integration for Rynkowa cena energii elektrycznej (RCE)
 
+**Dodano opóźnienie czasowe przy imporcie danych.
+Zdarza się, że HA pobierał dane wcześniej niż był zapis danych do panelu energia - wówczas błędnie była przypisana stawka do godziny.**
+
+Zmodyfikowano plik calendar.py - dodając opóźnienie w 188 linii: 
+
+    async def async_update(self):
+        """Retrieve latest state."""
+        now = datetime.now(ZoneInfo(self.hass.config.time_zone))
+        now = now.replace(minute=2, second=0)  # Dodaj opóźnienie czasowe dla odczytu danych
+
 Integracja do Home Assistant pozwalająca na użycie informacji o Rynkowej Cenie Energii
 ze strony https://www.pse.pl/dane-systemowe/funkcjonowanie-rb/raporty-dobowe-z-funkcjonowania-rb/podstawowe-wskazniki-cenowe-i-kosztowe/rynkowa-cena-energii-elektrycznej-rce
 
