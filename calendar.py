@@ -115,6 +115,7 @@ class RCECalendar(CalendarEntity):
     async def async_update(self):
         """Retrieve latest state."""
         now = datetime.now(ZoneInfo(self.hass.config.time_zone))
+        now = now.replace(minute=2, second=0)  # Dodaj opóźnienie czasowe dla odczytu danych
         if now < self.last_network_pull + timedelta(minutes=30):
             return
         self.last_network_pull = now
