@@ -68,12 +68,12 @@ class RCECalendar(CalendarEntity):
 
         ev: CalendarEvent
         for ev in self.ev:
-            if datetime.now(ZoneInfo(self.hass.config.time_zone)) - timedelta(minutes=2) < ev.end:
+            if datetime.now(ZoneInfo(self.hass.config.time_zone)) - timedelta(minutes=1) < ev.end:
                 return ev
 
     def fetch_cloud_data(self):
         """fetch today data"""
-        now = datetime.now(ZoneInfo(self.hass.config.time_zone)) - timedelta(minutes=2)
+        now = datetime.now(ZoneInfo(self.hass.config.time_zone)) - timedelta(minutes=1)
         try:
             self.cloud_response = requests.get(
                 f"https://www.pse.pl/getcsv/-/export/csv/PL_CENY_RYN_EN/data/{now.strftime('%Y%m%d')}",
@@ -86,7 +86,7 @@ class RCECalendar(CalendarEntity):
 
     def fetch_cloud_data_1(self):
         """fetch tomorrow data"""
-        now = datetime.now(ZoneInfo(self.hass.config.time_zone)) + timedelta(days=1) - timedelta(minutes=2)
+        now = datetime.now(ZoneInfo(self.hass.config.time_zone)) + timedelta(days=1) - timedelta(minutes=1)
         try:
             self.cloud_response = requests.get(
                 f"https://www.pse.pl/getcsv/-/export/csv/PL_CENY_RYN_EN/data/{now.strftime('%Y%m%d')}",
@@ -114,7 +114,7 @@ class RCECalendar(CalendarEntity):
 
     async def async_update(self):
         """Retrieve latest state."""
-        now = datetime.now(ZoneInfo(self.hass.config.time_zone))- timedelta(minutes=2)
+        now = datetime.now(ZoneInfo(self.hass.config.time_zone))- timedelta(minutes=1)
         if now < self.last_network_pull + timedelta(minutes=30):
             return
         self.last_network_pull = now
