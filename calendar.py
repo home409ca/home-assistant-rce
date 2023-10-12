@@ -115,6 +115,8 @@ class RCECalendar(CalendarEntity):
     async def async_update(self):
         """Retrieve latest state."""
         now = datetime.now(ZoneInfo(self.hass.config.time_zone))
+# Dodaj opóźnienie czasowe dla odczytu danych
+        now = now.replace(minute=2, second=0)
         if now < self.last_network_pull + timedelta(minutes=30):
             return
         self.last_network_pull = now
@@ -126,7 +128,8 @@ class RCECalendar(CalendarEntity):
         self.ev.clear()
 
         csv_output = csv.reader(self.cloud_response.text.splitlines(), delimiter=";")
-        now = now.replace(minute=0).replace(second=0)
+# Aktualizujemy czas, by zaczynać od 2 minuty po pełnej godzinie
+        now = now.replace(minute=2).replace(second=0)
         self.csv_to_events(csv_output, now)
 
         self.cloud_response = None
@@ -136,5 +139,6 @@ class RCECalendar(CalendarEntity):
             return False
 
         csv_output = csv.reader(self.cloud_response.text.splitlines(), delimiter=";")
-        now = now.replace(minute=0).replace(second=0) + timedelta(days=1)
+    # Aktualizujemy czas, by zaczynać od 2 minuty po pełnej godzinie
+        now = now.replace(minute=2).replace(second=0) + timedelta(days=1)
         self.csv_to_events(csv_output, now)
